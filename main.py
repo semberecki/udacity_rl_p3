@@ -9,8 +9,8 @@ import shutil
 import os
 
 # from tensorboardX import SummaryWriter
-from ddpg_agent import Agent
-from ddpg_loop import ddpg
+from maddpg_agent import Agent
+from maddpg_loop import maddpg
 
 
 def print_demo(env, action_size):
@@ -75,7 +75,6 @@ def plot_results(scores):
 
 if __name__ == '__main__':
     run_demo=False
-    multi_env=True
     eval_only=False
 
     log_path = os.getcwd()+"/log"
@@ -90,23 +89,28 @@ if __name__ == '__main__':
         print_demo(env, action_size)
 
     if eval_only:
-        pass
-        # actor_path='checkpoints/ddpg/115_checkpoint_actor_solved.pth'
-        # critic_path='checkpoints/ddpg/115_checkpoint_critic_solved.pth'
-        #
-        # agent_eval = Agent(state_size=state_size, action_size=action_size, random_seed=0)
-        # agent_eval.actor_local.load_state_dict(torch.load(actor_path))
-        # agent_eval.critic_local.load_state_dict(torch.load(critic_path))
-        # scores_eval_checkpoint = ddpg(env, agent_eval,train_mode=True,
-        #                               update_network=False,
-        #                               n_episodes=100, score_list_len=100)
-        #
-        # plot_results(scores_eval_checkpoint)
+        checkpoint_path="checkpoints/checkpoint.pt"
+
+        agent1 = Agent(state_size=state_size, action_size=action_size, random_seed=0, agent_number=0, logger=logger)
+        agent2 = Agent(state_size=state_size, action_size=action_size, random_seed=0, agent_number=1, logger=logger)
+
+        agent1.actor_local.load_state_dict(torch.load(checkpoint_path)[0]['actor_params'])
+        agent1.actor_optimizer.load_state_dict(torch.load(checkpoint_path)[0]['actor_optim_params'])
+        agent1.critic_local.load_state_dict(torch.load(checkpoint_path)[0]['critic_params'])
+        agent1.critic_optimizer.load_state_dict(torch.load(checkpoint_path)[0]['critic_optim_params'])
+
+        agent2.actor_local.load_state_dict(torch.load(checkpoint_path)[1]['actor_params'])
+        agent2.actor_optimizer.load_state_dict(torch.load(checkpoint_path)[1]['actor_optim_params'])
+        agent2.critic_local.load_state_dict(torch.load(checkpoint_path)[1]['critic_params'])
+        agent2.critic_optimizer.load_state_dict(torch.load(checkpoint_path)[1]['critic_optim_params'])
+
+        scores = maddpg(env, agent1, agent2, n_episodes=10, train_mode=True,update_network=False, score_list_len=100)
+        plot_results(scores)
 
     else:
         agent1 = Agent(state_size=state_size, action_size=action_size, random_seed=0, agent_number=0, logger=logger)
         agent2 = Agent(state_size=state_size, action_size=action_size, random_seed=0, agent_number=1, logger=logger)
-        scores = ddpg(env, agent1, agent2, n_episodes=1000, checkpoints_dir="checkpoints/ddpg")
+        scores = maddpg(env, agent1, agent2, n_episodes=10, checkpoints_dir="checkpoints")
         plot_results(scores)
 
 
