@@ -8,7 +8,6 @@ import numpy as np
 import shutil
 import os
 
-# from tensorboardX import SummaryWriter
 from maddpg_agent import Agent
 from maddpg_loop import maddpg
 
@@ -79,7 +78,7 @@ if __name__ == '__main__':
 
     log_path = os.getcwd()+"/log"
 
-    if  os.path.exists(log_path):
+    if os.path.exists(log_path):
         shutil.rmtree(log_path)
 
     logger = SummaryWriter(log_dir=log_path)
@@ -104,13 +103,13 @@ if __name__ == '__main__':
         agent2.critic_local.load_state_dict(torch.load(checkpoint_path)[1]['critic_params'])
         agent2.critic_optimizer.load_state_dict(torch.load(checkpoint_path)[1]['critic_optim_params'])
 
-        scores = maddpg(env, agent1, agent2, n_episodes=10, train_mode=True,update_network=False, score_list_len=100)
+        scores = maddpg(env, agent1, agent2, n_episodes=100, train_mode=True,update_network=False, score_list_len=100)
         plot_results(scores)
 
     else:
         agent1 = Agent(state_size=state_size, action_size=action_size, random_seed=0, agent_number=0, logger=logger)
         agent2 = Agent(state_size=state_size, action_size=action_size, random_seed=0, agent_number=1, logger=logger)
-        scores = maddpg(env, agent1, agent2, n_episodes=10, checkpoints_dir="checkpoints")
+        scores = maddpg(env, agent1, agent2, n_episodes=3000, checkpoints_dir="checkpoints")
         plot_results(scores)
 
 

@@ -76,11 +76,11 @@ def maddpg(env, agent1, agent2, n_episodes=1000,
             i_episode, np.mean(scores_window), np.array_str(current_scores)), end="")
 
         if i_episode % display_frequency == 0:
-            print('\rEpisode {}\tAverage Score: {:.5f}\tScore: {}'.format(
+            print('\rEpisode {}\tAverage Score: {:.5f}\tCurrent Score: {}'.format(
                 i_episode, np.mean(scores_window), np.array_str(current_scores)))
 
 
-        if np.mean(scores_window)>=score_required and update_network or i_episode==10:
+        if np.mean(scores_window)>=score_required and update_network:
             print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(i_episode-score_list_len, np.mean(scores_window)))
 
 

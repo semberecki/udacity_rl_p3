@@ -52,7 +52,7 @@ class Agent():
         self.iter = 0
         self.noise_gain=5
         self.noise_decay=0.001
-        self.noise_gain_end=1
+        self.noise_gain_end=0.0
 
 
     def act(self, state, add_noise=True):
@@ -127,9 +127,9 @@ class Agent():
         actions_pred_opponent = torch.from_numpy(actions_pred_opponent).float().to(device)
 
         if self.agent_number == 0:
-            actions_pred = torch.cat((actions_pred, actions_pred_opponent), dim=1)
+            actions_pred = torch.cat((actions_pred, actions_pred_opponent.detach()), dim=1)
         else:
-            actions_pred = torch.cat((actions_pred_opponent, actions_pred), dim=1)
+            actions_pred = torch.cat((actions_pred_opponent.detach(), actions_pred), dim=1)
 
         actor_loss = -self.critic_local(states, actions_pred).mean()
         # Minimize the loss
