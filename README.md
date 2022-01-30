@@ -2,6 +2,9 @@
 
 ## Project Details
 
+
+The Unity mutli-agent Tennis environment solved with Multi-agent DDPG algorithm.
+
 ### State space and action space
 
 ```
@@ -58,7 +61,7 @@ jupyter notebook
 
 ## Project sructure
 
-1. ```maddpg_agent.py``` - contains MADDPG implementation, with 
+1. ```maddpg_agent.py``` - contains MADDPG implementation. 
 2. ```maddpg_loop.py``` - defines workflow of algorithm
 3. ```main.py``` - headless run
 4. ```model.py``` - defines used networks

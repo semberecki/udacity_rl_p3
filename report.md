@@ -106,11 +106,9 @@ Environment solved in 273 episodes!	Average Score: 0.52
 
 Although, the agent was trained properly (```checkpoints_jup/checkpoint.py```), in real benchmark the result wasn't good enough.
 Therefore, after a few attempts the requested score was increased to 0.8 and 1.0
-
+The results provided below was done using ```main.py``` runs.
 
 ```
-
-
 Episode 10      Average Score: 0.01000  Current Score: 0.00000 -0.01000
 Episode 20      Average Score: 0.00950  Current Score: -0.01000 0.00000
 Episode 30      Average Score: 0.00933  Current Score: 0.00000 0.090000
@@ -320,5 +318,5 @@ And in a result they play very well.
 ![agent](images/trained.gif)
 
 ## Ideas for Future Work
-1. This algorithm is very depending on the noise. Test the algorithm on other environment and try to implement its version which does not relay on it so much and test ho
-2. Implement an multiagent version of Distributed Distributional Deterministic Policy Gradients (D4PG)
+1. This algorithm is very depending on the noise. Test the algorithm on other environment and try to implement its version which does not relay on it so much.
+2. Implement a multi-agent version of Distributed Distributional Deterministic Policy Gradients (D4PG).
