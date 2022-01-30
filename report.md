@@ -1,4 +1,111 @@
 
+## Learning Algorithm
+
+The network was trained with MADDPG using 3-layer network for Actor with PyTorch layers:
+
+1. Linear(24,256)
+2. Linear(256,128)
+3. Linear(128,2).
+
+The input was 24 state-size input and the network returned 2 action values from 0 to 1.
+
+Beside that, it was used also 3-layer Critic Network, which takes 48-states (for both agents) and 4-action values (both agents) as input
+
+1. Linear(24+24,256)
+2. Linear(256+4,128)
+3. Linear(128,1).
+
+and returns the Q-value.
+
+
+Both agents have actor and critic, also in local and target version.
+The actor takes local state action for current agent and provide actions.
+The critic has states from both agents and it has also both information about provided actions.
+
+Also, there was used standard replay buffer. 
+
+Also the Ornstein–Uhlenbeck process noise was added to actions values in a form.
+
+![agent](images/ou.png)
+
+Also, there was added some gain to the noise to the action, which decreases over time. 
+The parameters of the gains was:
+```
+NOISE_GAIN_INITIAL = 5
+NOISE_GAIN_END = 0
+NOISE_DECAY = 0.001
+```
+After each training step the gain value is decreased by NOISE_DECAY parameter.
+Increasing the noise signal was crucial for agent to start learning how to play and it also adds randomness 
+for continuous actions
+
+
+The results are provided in ```Tennis-solution-training.ipynb``` and ```Tennis-solution-evaluation.ipynb```.
+Thie first one contains a training procedure and the second one is used for evaluation for the best model.
+The application can be also run with python-script ```main.py```.
+
+
+Network hyperparameters used:
+
+```
+BUFFER_SIZE = int(1e6)  # replay buffer size
+BATCH_SIZE = 128        # minibatch size
+GAMMA = 0.99            # discount factor
+TAU = 0.05              # for soft update of target parameters
+LR_ACTOR = 1e-3         # learning rate of the actor
+LR_CRITIC = 1e-3        # learning rate of the critic
+
+```
+
+## Progress
+
+The training procedure (provided in a jupyer notebook) has a form:
+
+```
+Episode 10	Average Score: 0.01000	Current Score: 0.00000 -0.01000
+Episode 20	Average Score: 0.00500	Current Score: -0.01000 0.00000
+Episode 30	Average Score: 0.01567	Current Score: 0.00000 -0.01000
+Episode 40	Average Score: 0.01425	Current Score: 0.00000 -0.01000
+Episode 50	Average Score: 0.01140	Current Score: -0.01000 0.00000
+Episode 60	Average Score: 0.00950	Current Score: 0.00000 -0.01000
+Episode 70	Average Score: 0.01100	Current Score: -0.01000 0.00000
+Episode 80	Average Score: 0.01088	Current Score: -0.01000 0.00000
+Episode 90	Average Score: 0.01411	Current Score: 0.00000 -0.01000
+Episode 100	Average Score: 0.01460	Current Score: 0.00000 0.09000
+Episode 110	Average Score: 0.01650	Current Score: -0.01000 0.00000
+Episode 120	Average Score: 0.02040	Current Score: 0.00000 -0.01000
+Episode 130	Average Score: 0.01670	Current Score: 0.00000 -0.01000
+Episode 140	Average Score: 0.02060	Current Score: 0.10000 -0.01000
+Episode 150	Average Score: 0.02460	Current Score: 0.00000 -0.01000
+Episode 160	Average Score: 0.03160	Current Score: 0.00000 -0.01000
+Episode 170	Average Score: 0.03830	Current Score: 0.10000 -0.01000
+Episode 180	Average Score: 0.04320	Current Score: -0.01000 0.00000
+Episode 190	Average Score: 0.04290	Current Score: 0.00000 -0.01000
+Episode 200	Average Score: 0.04670	Current Score: -0.01000 0.00000
+Episode 210	Average Score: 0.05150	Current Score: 0.09000 0.100000
+Episode 220	Average Score: 0.05720	Current Score: -0.01000 0.10000
+Episode 230	Average Score: 0.07110	Current Score: 0.10000 -0.01000
+Episode 240	Average Score: 0.07910	Current Score: 0.09000 0.100000
+Episode 250	Average Score: 0.10100	Current Score: 0.10000 0.090000
+Episode 260	Average Score: 0.10560	Current Score: 0.00000 0.090000
+Episode 270	Average Score: 0.10650	Current Score: 0.20000 -0.01000
+Episode 280	Average Score: 0.11120	Current Score: 0.09000 0.200000
+Episode 290	Average Score: 0.13210	Current Score: 0.19000 0.300000
+Episode 300	Average Score: 0.17310	Current Score: 0.10000 -0.01000
+Episode 310	Average Score: 0.18230	Current Score: 0.10000 0.090000
+Episode 320	Average Score: 0.26150	Current Score: 0.89000 1.000000
+Episode 330	Average Score: 0.30360	Current Score: 0.39000 0.500000
+Episode 340	Average Score: 0.37170	Current Score: 0.89000 1.000000
+Episode 350	Average Score: 0.43180	Current Score: 0.50000 0.490000
+Episode 360	Average Score: 0.45910	Current Score: 1.40000 1.390000
+Episode 370	Average Score: 0.47650	Current Score: 0.09000 0.100000
+Episode 373	Average Score: 0.51860	Current Score: 2.10000 2.09000
+Environment solved in 273 episodes!	Average Score: 0.52
+```
+![agent](images/solved-0.5.png)
+
+Although, the agent was trained properly (```checkpoints_jup/checkpoint.py```), in real benchmark the result wasn't good enough.
+Therefore, after a few attempts the requested score was increased to 0.8 and 1.0
 
 
 ```
@@ -96,6 +203,12 @@ Episode 890     Average Score: 0.77220  Current Score: 0.60000 0.590000
 Episode 894     Average Score: 0.81330  Current Score: 2.40000 2.39000
 Environment solved in 794 episodes!     Average Score: 0.81
 ```
+![agent](images/solved-0.8.png)
+
+
+As it was possible to have agent score 0.8, further idea was to test it for 1.0.
+Checkpoint saved in ```checkpoints_jup/checkpoint-08-solved.py```
+
 
 
 ```
@@ -176,6 +289,36 @@ Episode 740     Average Score: 0.98830  Current Score: 2.60000 2.700000
 Episode 741     Average Score: 1.01030  Current Score: 2.60000 2.60000
 Environment solved in 641 episodes!     Average Score: 1.01
 
+```
 
+![agent](images/solved-1.0.png)
+
+Checkpoint saved in ```checkpoints_jup/checkpoint-10-solved.py```
+
+## Evaluation
+
+Having an agent trained with score 1.0, the final evaluation over 100 episodes in Average Score: 0.68370. 
+It is worth to note, that the noise added for actions was disabled during this phase. 
 
 ```
+Episode 10	Average Score: 0.53900	Current Score: -0.01000 0.10000
+Episode 20	Average Score: 0.49950	Current Score: 0.20000 0.090000
+Episode 30	Average Score: 0.59600	Current Score: 0.90000 0.890000
+Episode 40	Average Score: 0.61175	Current Score: 0.10000 0.190000
+Episode 50	Average Score: 0.59540	Current Score: 0.80000 0.690000
+Episode 60	Average Score: 0.64450	Current Score: 1.50000 1.490000
+Episode 70	Average Score: 0.67386	Current Score: 0.80000 0.69000
+Episode 80	Average Score: 0.67338	Current Score: 0.30000 0.190000
+Episode 90	Average Score: 0.67411	Current Score: -0.01000 0.10000
+Episode 100	Average Score: 0.68370	Current Score: 0.60000 0.59000
+
+Episode finished 0 episodes.	Average Score: 0.68370
+```
+
+And in a result they play very well.
+
+![agent](images/trained.gif)
+
+## Ideas for Future Work
+1. This algorithm is very depending on the noise. Test the algorithm on other environment and try to implement its version which does not relay on it so much and test ho
+2. Implement an multiagent version of Distributed Distributional Deterministic Policy Gradients (D4PG)

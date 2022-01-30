@@ -9,9 +9,9 @@ from maddpg_agent import experience, ReplayBuffer
 BUFFER_SIZE = int(1e6)  # replay buffer size
 BATCH_SIZE = 128        # minibatch size
 
-NOISE_GAIN_INITIAL=5
-NOISE_GAIN_END=0
-NOISE_DECAY=0.001
+NOISE_GAIN_INITIAL = 5
+NOISE_GAIN_END = 0
+NOISE_DECAY = 0.001
 
 
 import os
@@ -42,8 +42,8 @@ def maddpg(env, agent1, agent2, n_episodes=1000,
 
     noise_gain=NOISE_GAIN_INITIAL
     if update_network:
-        agent1.noise_gain=noise_gain
-        agent2.noise_gain=noise_gain
+        agent1.noise_gain=NOISE_GAIN_INITIAL
+        agent2.noise_gain=NOISE_GAIN_INITIAL
 
     brain_name = env.brain_names[0]
     for i_episode in range(1, n_episodes+1):
@@ -73,11 +73,9 @@ def maddpg(env, agent1, agent2, n_episodes=1000,
                     agent1.learn(experiences1, agent1)
                     agent2.learn(experiences2, agent2)
 
-                    # Update epsilon noise value
+                    # Update noise gain value
                     noise_gain -= NOISE_DECAY
-                    if noise_gain < NOISE_GAIN_END:
-                        noise_gain= NOISE_GAIN_END
-
+                    noise_gain = max(noise_gain, NOISE_GAIN_END)
                     agent1.noise_gain=noise_gain
                     agent2.noise_gain=noise_gain
 

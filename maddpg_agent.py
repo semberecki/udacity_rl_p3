@@ -10,12 +10,15 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 GAMMA = 0.99            # discount factor
-TAU = 0.05             # for soft update of target parameters
+TAU = 0.05              # for soft update of target parameters
 LR_ACTOR = 1e-3         # learning rate of the actor
 LR_CRITIC = 1e-3        # learning rate of the critic
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+
+experience = namedtuple("Experience",field_names=["obs", "obs_full", "actions", "reward",
+                                                  "next_obs", "next_obs_full", "done"])
 
 class Agent():
     """Interacts with and learns from the environment."""
@@ -75,7 +78,6 @@ class Agent():
             action += self.noise_gain*self.noise.sample()
         return np.clip(action, -1, 1)
 
-
     def reset(self):
         self.noise.reset()
 
@@ -106,10 +108,10 @@ class Agent():
 
         Q_targets_next = self.critic_target(next_states, actions_next)
         # Compute Q targets for current states (y_i)
-        #Q_targets = rewards + (gamma * Q_targets_next * (1 - dones))
+
         Q_targets = rewards[self.agent_number].view(-1,1) + (gamma * Q_targets_next * (1 - dones[self.agent_number].view(-1,1)))
         # Compute critic loss
-        #Q_expected = self.critic_local(states, actions)
+
         Q_expected = self.critic_local(states, torch.cat((actions), dim=1))
         critic_loss = F.mse_loss(Q_expected, Q_targets)
 
@@ -139,14 +141,13 @@ class Agent():
         self.soft_update(self.critic_local, self.critic_target, TAU)
         self.soft_update(self.actor_local, self.actor_target, TAU)
 
-
         al = actor_loss.cpu().detach().item()
         cl = critic_loss.cpu().detach().item()
         self.logger.add_scalars('agent%i/losses' % self.agent_number,
                            {'critic loss': cl,
                             'actor_loss': al},
                            self.iter)
-        self.iter+= 1
+        self.iter += 1
 
     def soft_update(self, local_model, target_model, tau):
         """Soft update model parameters.
@@ -160,6 +161,7 @@ class Agent():
         """
         for target_param, local_param in zip(target_model.parameters(), local_model.parameters()):
             target_param.data.copy_(tau*local_param.data + (1.0-tau)*target_param.data)
+
 
 class OUNoise:
     """Ornstein-Uhlenbeck process."""
@@ -183,8 +185,7 @@ class OUNoise:
         self.state = x + dx
         return self.state
 
-experience = namedtuple("Experience",field_names=["obs", "obs_full", "actions", "reward",
-                                                  "next_obs", "next_obs_full", "done"])
+
 class ReplayBuffer:
     """Fixed-size buffer to store experience tuples."""
 
