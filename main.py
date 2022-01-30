@@ -109,7 +109,7 @@ if __name__ == '__main__':
     else:
         agent1 = Agent(state_size=state_size, action_size=action_size, random_seed=0, agent_number=0, logger=logger)
         agent2 = Agent(state_size=state_size, action_size=action_size, random_seed=0, agent_number=1, logger=logger)
-        scores = maddpg(env, agent1, agent2, n_episodes=3000, checkpoints_dir="checkpoints")
+        scores = maddpg(env, agent1, agent2, n_episodes=3000, checkpoints_dir="checkpoints", score_required=1.0)
         plot_results(scores)
 
 

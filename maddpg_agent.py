@@ -10,7 +10,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 GAMMA = 0.99            # discount factor
-TAU = 6e-2              # for soft update of target parameters
+TAU = 0.05             # for soft update of target parameters
 LR_ACTOR = 1e-3         # learning rate of the actor
 LR_CRITIC = 1e-3        # learning rate of the critic
 
@@ -20,7 +20,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 class Agent():
     """Interacts with and learns from the environment."""
 
-    def __init__(self,state_size, action_size, random_seed, agent_number, logger):
+    def __init__(self,state_size, action_size, random_seed, agent_number,logger):
         """Initialize an Agent object.
         
         Params
@@ -45,14 +45,12 @@ class Agent():
 
         # Noise process
         self.noise = OUNoise(action_size, random_seed)
+        self.noise_gain = None
 
         # Replay memory
         self.agent_number=agent_number
         self.logger = logger
         self.iter = 0
-        self.noise_gain=5
-        self.noise_decay=0.001
-        self.noise_gain_end=0.0
 
 
     def act(self, state, add_noise=True):
@@ -141,10 +139,6 @@ class Agent():
         self.soft_update(self.critic_local, self.critic_target, TAU)
         self.soft_update(self.actor_local, self.actor_target, TAU)
 
-        # Update epsilon noise value
-        self.noise_gain = self.noise_gain -self.noise_decay
-        if self.noise_gain < self.noise_gain_end:
-            self.noise_gain=self.noise_gain_end
 
         al = actor_loss.cpu().detach().item()
         cl = critic_loss.cpu().detach().item()
@@ -170,7 +164,7 @@ class Agent():
 class OUNoise:
     """Ornstein-Uhlenbeck process."""
 
-    def __init__(self, size, seed, mu=0., theta=0.13, sigma=0.2):
+    def __init__(self, size, seed, mu=0., theta=0.12, sigma=0.2):
         """Initialize parameters and noise process."""
         self.mu = mu * np.ones(size)
         self.theta = theta
