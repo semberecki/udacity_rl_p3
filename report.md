@@ -320,3 +320,7 @@ And in a result they play very well.
 ## Ideas for Future Work
 1. This algorithm is very depending on the noise. Test the algorithm on other environment and try to implement its version which does not relay on it so much.
 2. Implement a multi-agent version of Distributed Distributional Deterministic Policy Gradients (D4PG).
+
+
+## References
+1. Udacity materials
