@@ -14621,7 +14621,7 @@ Environment solved in 273 episodes!	Average Score: 0.52
 
 <span class="n">scores_eval</span> <span class="o">=</span> <span class="n">maddpg</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">agent1_eval</span><span class="p">,</span> <span class="n">agent2_eval</span><span class="p">,</span> <span class="n">n_episodes</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> 
                      <span class="n">train_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">update_network</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">score_list_len</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                    <span class="n">save_temp_checkpoints</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">save_temp_checkpoints</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_scores</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14682,14 +14682,6 @@ Environment solved in 273 episodes!	Average Score: 0.52
 </div>
 </div>
 
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="4.-It's-Your-Turn!">4. It's Your Turn!<a class="anchor-link" href="#4.-It's-Your-Turn!">&#182;</a></h3><p>Now it's your turn to train your own agent to solve the environment!  When training the environment, set <code>train_mode=True</code>, so that the line for resetting the environment looks like the following:</p>
-<div class="highlight"><pre><span></span><span class="n">env_info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">train_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="n">brain_name</span><span class="p">]</span>
-</pre></div>
-
-</div>
 </div>
 </body>
 
